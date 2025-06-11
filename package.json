@@ -1,0 +1,11 @@
+{
+  "name": "@terragon/containers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:e2b": "e2b template build -c \"/root/.jupyter/start-up.sh\"",
+    "build:local": "docker build -f local.Dockerfile -t terragon-local ."
+  },
+  "packageManager": "pnpm@10.8.1"
+}
