@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: terragon-local
+  IMAGE_NAME: ${{ github.repository }}-local
 
 jobs:
   build-and-push:
