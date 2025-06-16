@@ -1,18 +1,82 @@
 # Use Ubuntu as the base image
 # Note: Use `FROM e2bdev/code-interpreter:latest` instead if you want to use the code interpreting features (https://github.com/e2b-dev/code-interpreter)
 # and not just plain E2B sandbox.
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release \
+    python3 \
+    binutils \
+    sudo \
+    build-essential \
+    bzr \
+    default-libmysqlclient-dev \
+    dnsutils \
+    gettext \
+    git \
+    git-lfs \
+    inotify-tools \
+    iputils-ping \
+    jq \
+    libbz2-dev \
+    libc6 \
+    libc6-dev \
+    libcurl4-openssl-dev \
+    libdb-dev \
+    libedit2 \
+    libffi-dev \
+    libgcc-13-dev \
+    libgcc1 \
+    libgdbm-compat-dev \
+    libgdbm-dev \
+    libgdiplus \
+    libgssapi-krb5-2 \
+    liblzma-dev \
+    libncurses-dev \
+    libncursesw5-dev \
+    libnss3-dev \
+    libpq-dev \
+    libpsl-dev \
+    libpython3-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    libstdc++-13-dev \
+    libunwind8 \
+    libuuid1 \
+    libxml2-dev \
+    libz3-dev \
+    make \
+    moreutils \
+    netcat-openbsd \
+    openssh-client \
+    pkg-config \
+    protobuf-compiler \
+    python3-pip \
+    ripgrep \
+    rsync \
+    software-properties-common \
+    sqlite3 \
+    swig3.0 \
+    tk-dev \
+    tzdata \
+    unixodbc-dev \
+    unzip \
+    uuid-dev \
+    xz-utils \
+    zip \
+    zlib1g \
+    zlib1g-dev
 
 # Install Node.js 24 (current release)
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
@@ -34,8 +98,7 @@ RUN echo \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Install Docker
-RUN apt-get update && apt-get install -y docker-ce=5:27.1.1-1~ubuntu.20.04~focal docker-ce-cli=5:27.1.1-1~ubuntu.20.04~focal containerd.io
-
+RUN apt-get update && apt-get install -y docker-ce=5:27.1.1-1~ubuntu.24.04~noble docker-ce-cli=5:27.1.1-1~ubuntu.24.04~noble containerd.io
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
