@@ -12,7 +12,10 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release \
+    gcc \
+    python3 \
+    python3-pip
 
 # Install Node.js 24 (current release)
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
