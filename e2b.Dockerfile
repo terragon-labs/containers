@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     lsb-release \
     gcc \
     python3 \
-    python3-pip
+    python3-pip \
+    unzip
 
 # Install Node.js 24 (current release)
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
@@ -39,6 +40,13 @@ RUN echo \
 # Install Docker
 RUN apt-get update && apt-get install -y docker-ce=5:27.1.1-1~ubuntu.20.04~focal docker-ce-cli=5:27.1.1-1~ubuntu.20.04~focal containerd.io
 
+# Install bun
+ENV BUN_INSTALL="/root/.bun"
+RUN curl -fsSL https://bun.sh/install | bash \
+    && ln -s /root/.bun/bin/bun /usr/local/bin/bun
+
+# Install pnpm
+RUN npm install -g pnpm
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
