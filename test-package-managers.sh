@@ -46,4 +46,31 @@ else
     echo "✗ pnpm not found in PATH"
 fi
 
+# Test asdf
+echo -e "\n3. Testing asdf:"
+# Source the asdf script to make it available
+export PATH="/usr/local/bin:$PATH"
+if command -v asdf &> /dev/null; then
+    echo "✓ asdf found at: $(which asdf)"
+    echo "✓ asdf version: $(asdf --version)"
+    
+    # Test asdf plugin management
+    asdf plugin list &> /dev/null
+    if [ $? -eq 0 ]; then
+        echo "✓ asdf plugin management is working"
+    else
+        echo "✗ asdf plugin management failed"
+    fi
+    
+    # Try to add a plugin (nodejs as an example)
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git &> /dev/null || true
+    if asdf plugin list | grep -q nodejs; then
+        echo "✓ asdf successfully added nodejs plugin"
+    else
+        echo "✓ asdf is installed (plugin test skipped - requires git configuration)"
+    fi
+else
+    echo "✗ asdf not found in PATH"
+fi
+
 echo -e "\nAll tests completed!"

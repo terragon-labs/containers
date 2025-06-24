@@ -34,11 +34,11 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
 
 # Set up the stable Docker repository
 RUN echo \
-    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Install Docker
-RUN apt-get update && apt-get install -y docker-ce=5:27.1.1-1~ubuntu.20.04~focal docker-ce-cli=5:27.1.1-1~ubuntu.20.04~focal containerd.io
+RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Install bun
 ENV BUN_INSTALL="/root/.bun"
@@ -47,6 +47,11 @@ RUN curl -fsSL https://bun.sh/install | bash \
 
 # Install pnpm
 RUN npm install -g pnpm
+
+# Install asdf
+RUN curl -fsSL https://github.com/asdf-vm/asdf/releases/download/v0.18.0/asdf-v0.18.0-linux-amd64.tar.gz | tar -xz -C /usr/local/bin \
+    && chmod +x /usr/local/bin/asdf \
+    && echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
