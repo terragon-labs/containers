@@ -2,6 +2,8 @@
 
 Containers for the Terragon platform.
 
+**Note: This project is not affiliated with Anthropic.**
+
 ## e2b
 
 ```sh
