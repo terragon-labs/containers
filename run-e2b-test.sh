@@ -23,4 +23,7 @@ docker run --rm e2b-package-managers pnpm --help | head -5
 echo -e "\nTesting asdf --version:"
 docker run --rm e2b-package-managers bash -c "export PATH='/usr/local/bin:$PATH' && asdf --version"
 
+echo -e "\nTesting claude --version:"
+docker run --rm e2b-package-managers claude --version
+
 echo -e "\nAll tests completed successfully!"

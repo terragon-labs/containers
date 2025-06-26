@@ -73,4 +73,21 @@ else
     echo "✗ asdf not found in PATH"
 fi
 
+# Test claude
+echo -e "\n4. Testing claude:"
+if command -v claude &> /dev/null; then
+    echo "✓ claude found at: $(which claude)"
+    echo "✓ claude version: $(claude --version)"
+    
+    # Test claude help command
+    claude --help &> /dev/null
+    if [ $? -eq 0 ]; then
+        echo "✓ claude command is working"
+    else
+        echo "✗ claude command failed"
+    fi
+else
+    echo "✗ claude not found in PATH"
+fi
+
 echo -e "\nAll tests completed!"

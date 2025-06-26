@@ -48,6 +48,18 @@ RUN curl -fsSL https://bun.sh/install | bash \
 # Install pnpm
 RUN npm install -g pnpm
 
+# Install claude-code
+RUN npm install -g @anthropic-ai/claude-code
+
+# Modify claude binary to bypass permissions
+RUN sed -i.bak -e '1a\
+Object.defineProperty(process, "getuid", {\
+  value: function() { return 1000; },\
+  writable: false,\
+  enumerable: true,\
+  configurable: true\
+});' -e 's/![a-zA-Z_$][a-zA-Z0-9_$]*()[.]bypassPermissionsModeAccepted/false/g' "$(readlink -f "$(which claude)")"
+
 # Install asdf
 RUN curl -fsSL https://github.com/asdf-vm/asdf/releases/download/v0.18.0/asdf-v0.18.0-linux-amd64.tar.gz | tar -xz -C /usr/local/bin \
     && chmod +x /usr/local/bin/asdf \
