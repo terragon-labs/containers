@@ -1,22 +1,21 @@
-name: Publish Container Images
+name: Publish Container Image
 
 on:
   push:
     branches:
       - main
     paths:
-      - "local.Dockerfile"
       - "test.Dockerfile"
       - ".github/workflows/publish-container.yml"
   pull_request:
     paths:
-      - "local.Dockerfile"
       - "test.Dockerfile"
       - ".github/workflows/publish-container.yml"
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-test
 
 jobs:
   build-and-push:
@@ -24,13 +23,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        include:
-          - dockerfile: local.Dockerfile
-            image: ${{ github.repository }}-local
-          - dockerfile: test.Dockerfile
-            image: ${{ github.repository }}-test
 
     steps:
       - name: Checkout repository
@@ -47,7 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ matrix.image }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -58,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ${{ matrix.dockerfile }}
+          file: test.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
