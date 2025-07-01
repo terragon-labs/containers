@@ -52,7 +52,7 @@ RUN curl -fsSL https://bun.sh/install | bash \
     && ln -s /root/.bun/bin/bun /usr/local/bin/bun
 
 # Install npm global packages
-RUN npm install -g pnpm @anthropic-ai/claude-code@1.0.35 \
+RUN npm install -g pnpm @anthropic-ai/claude-code@1.0.38 \
     && npm cache clean --force
 
 # Modify claude binary to bypass permissions
