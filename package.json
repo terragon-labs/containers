@@ -1,11 +1,6 @@
 {
   "name": "@terragon/containers",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build:e2b": "e2b template build -c \"/root/.jupyter/start-up.sh\"",
-    "build:test": "docker build -f test.Dockerfile -t terragon-test ."
-  },
+  "description": "Containers used on the Terragon Platform",
   "packageManager": "pnpm@10.8.1"
 }

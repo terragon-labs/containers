@@ -1,1 +1,0 @@
-e2b template build --cpu-count 2 --memory-mb 4096 --name "terry-test"
