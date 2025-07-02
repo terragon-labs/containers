@@ -1,6 +1,3 @@
-# Use Ubuntu as the base image
-# Note: Use `FROM e2bdev/code-interpreter:latest` instead if you want to use the code interpreting features (https://github.com/e2b-dev/code-interpreter)
-# and not just plain E2B sandbox.
 FROM ubuntu:20.04
 
 # Avoid prompts from apt
