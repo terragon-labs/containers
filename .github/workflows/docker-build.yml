@@ -1,0 +1,38 @@
+name: Docker Build and Size
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build default.Dockerfile
+        run: |
+          docker build -f default.Dockerfile -t terragon-default .
+          echo "Default image size:"
+          docker images terragon-default --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+      - name: Build test.Dockerfile
+        run: |
+          docker build -f test.Dockerfile -t terragon-test .
+          echo "Test image size:"
+          docker images terragon-test --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+      - name: Summary
+        run: |
+          echo "## Docker Image Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| terragon-default | $(docker images terragon-default --format '{{.Size}}') |" >> $GITHUB_STEP_SUMMARY
+          echo "| terragon-test | $(docker images terragon-test --format '{{.Size}}') |" >> $GITHUB_STEP_SUMMARY
