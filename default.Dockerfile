@@ -61,6 +61,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install bun
+ARG BUN_VERSION=1.2.14
+RUN mise use --global "bun@${BUN_VERSION}" \
+    && mise cache clear || true \
+    && rm -rf "$HOME/.cache/mise" "$HOME/.local/share/mise/downloads"
+
 # Install PHP and Composer    
 RUN apt-get update \
     && apt-get install -y php php-cli php-common php-curl php-mbstring php-xml php-zip \
@@ -68,10 +74,6 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-    
-# Install bun
-RUN curl -fsSL https://bun.sh/install | bash \
-    && ln -s /root/.bun/bin/bun /usr/local/bin/bun
 
 # Install Rust and Cargo
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
