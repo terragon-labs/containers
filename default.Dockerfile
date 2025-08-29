@@ -1,3 +1,6 @@
+# Use Ubuntu as the base image
+# Note: Use `FROM e2bdev/code-interpreter:latest` instead if you want to use the code interpreting features (https://github.com/e2b-dev/code-interpreter)
+# and not just plain E2B sandbox.
 FROM ubuntu:24.04
 
 # Avoid prompts from apt
@@ -23,12 +26,17 @@ RUN apt-get update && apt-get install -y \
     ripgrep \
     && rm -rf /var/lib/apt/lists/*
 
-
-# Install Node.js 22
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install mise (optional runtime version manager)
+# Users can use mise to manage and add more languages and tools
+RUN install -dm 0755 /etc/apt/keyrings \
+    && curl -fsSL https://mise.jdx.dev/gpg-key.pub | gpg --batch --yes --dearmor -o /etc/apt/keyrings/mise-archive-keyring.gpg \
+    && chmod 0644 /etc/apt/keyrings/mise-archive-keyring.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg] https://mise.jdx.dev/deb stable main" > /etc/apt/sources.list.d/mise.list \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends mise/stable \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo 'eval "$(mise activate bash)"' >> /etc/profile \
+    && mise settings set experimental true
 
 # Install GitHub CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -36,14 +44,6 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
     && apt-get update \
     && apt-get install -y --no-install-recommends gh \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install PHP and Composer
-RUN apt-get update \
-    && apt-get install -y php php-cli php-common php-curl php-mbstring php-xml php-zip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && chmod +x /usr/local/bin/composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -55,6 +55,20 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Node.js 22    
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP and Composer    
+RUN apt-get update \
+    && apt-get install -y php php-cli php-common php-curl php-mbstring php-xml php-zip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+    
 # Install bun
 RUN curl -fsSL https://bun.sh/install | bash \
     && ln -s /root/.bun/bin/bun /usr/local/bin/bun
@@ -74,7 +88,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install pnpm, claude code, gemini cli, and codex
-RUN npm install -g pnpm @anthropic-ai/claude-code@1.0.93 @google/gemini-cli@0.1.12 @openai/codex@0.25.0
+RUN npm install -g pnpm @anthropic-ai/claude-code@1.0.96 @google/gemini-cli@0.1.12 @openai/codex@0.27.0
 
 # Patch gemini cli to disable console.debug
 RUN sed -i.bak -e '1a\
